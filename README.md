@@ -3,7 +3,8 @@
 A new flutter plugin project.
 
 ## Features
-** Only Android Support. 
+** Only Android Support
+
 ** Kotlin Plugin
 
 For iOS and android support, you should consider [this tflite](https://github.com/shaqian/flutter_tflite) plugin
