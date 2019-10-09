@@ -36,7 +36,7 @@ class TflitePlugin: MethodCallHandler {
 
     @JvmStatic
     fun registerWith(reg: Registrar) {
-      val channel = MethodChannel(registrar.messenger(), "tflite")
+      val channel = MethodChannel(reg.messenger(), "tflite")
       channel.setMethodCallHandler(TflitePlugin())
       assetManager = reg.context().assets
       registrar = reg
