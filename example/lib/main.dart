@@ -1,54 +1,163 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-
+import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:tflite/tflite.dart';
+import 'package:tflite_example/view_model.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(App());
 
-class MyApp extends StatefulWidget {
+class App extends StatelessWidget {
   @override
-  _MyAppState createState() => _MyAppState();
+  Widget build(BuildContext context){
+    return MaterialApp(
+      title: 'Tflite Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.lightGreen,
+      ),
+      home: HomePage(title: 'Tflite demo home page'),
+  );
+  }
+  
 }
 
-class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
+class HomePage extends StatefulWidget {
+
+  HomePage({Key key, this.title}): super(key: key);
+  final String title;
+
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<HomePage> {
+  
+  ViewModel _viewModel;
 
   @override
   void initState() {
     super.initState();
-    initPlatformState();
-  }
-
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    try {
-      platformVersion = await Tflite.platformVersion;
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      _platformVersion = platformVersion;
-    });
+    _viewModel = ViewModel();
+    _viewModel.init();
   }
 
   @override
+  void dispose(){
+    _viewModel.close();
+    super.dispose();
+  }
+
+  Widget takePhotoButton(bool isCamera){
+    return StreamBuilder(
+      stream: _viewModel.loadModelStream,
+      initialData: false,
+      builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+        return Expanded(
+          child: RaisedButton(
+            child: isCamera ? 
+              Text("Camera", style: TextStyle(fontSize: 20.0)) :
+              Text("Photos", style: TextStyle(fontSize: 20.0)),
+            color: Theme.of(context).primaryColor,
+            onPressed: snapshot.data 
+              ? null : 
+              () => isCamera ? _viewModel.processCameraImage
+                      : _viewModel.processGalleryImage,
+
+
+        )
+        );
+      }
+    );
+  }
+
+  Widget showRecognitions(){
+    return ConstrainedBox(
+      constraints: BoxConstraints.expand(height: 120.0),
+      child: StreamBuilder(
+        stream: _viewModel.classifierStream,
+        builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: snapshot.data == null ? [] : 
+            snapshot.data.map((res){
+              return Text(
+                 "${res["index"]} - ${res["label"]}: ${res["confidence"].toStringAsFixed(3)}",
+                 style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 20.0,
+                      background: Paint()..color = Colors.white,
+                    ),
+              );
+            }).toList(),
+        );
+      }
+    )
+    );
+  }
+
+  Widget showPhoto(){
+    return Expanded(
+      child: Center(
+        child: StreamBuilder(
+          stream: _viewModel.imagePickerStream,
+          initialData: null,
+          builder: (BuildContext context, AsyncSnapshot<File> snapshot){
+            return snapshot.data == null ? Text('No image selected.')
+              : Image.file(snapshot.data);
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildButtons(){
+    return ConstrainedBox(
+      constraints: BoxConstraints.expand(height: 80.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          takePhotoButton(false),
+          takePhotoButton(true),        
+    ]));
+  }
+
+
+Widget _buildMainWidget(){
+  return Column(
+    children: <Widget> [
+      showPhoto(),
+      showRecognitions(),
+      _buildButtons(),
+    ]
+  );
+}
+
+Widget _busyToProcessImage(){
+  return StreamBuilder(
+     stream: _viewModel.classifierStream,
+      builder: (BuildContext context, AsyncSnapshot<List> snapshot){
+        return snapshot.data == null ? Center(child: CircularProgressIndicator()) : [];
+      }
+  );
+}
+  
+
+  @override
   Widget build(BuildContext context) {
+    List<Widget> stackChildren = [];
+    stackChildren.add(_buildMainWidget());
+    stackChildren.add(_busyToProcessImage());
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: const Text('Tflite demo app'),
         ),
         body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+          child: Stack(
+            children: stackChildren,
+          ),
         ),
       ),
     );

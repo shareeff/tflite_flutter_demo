@@ -4,7 +4,7 @@ version '1.0-SNAPSHOT'
 buildscript {
     ext{
         kotlin_version = '1.3.40'
-        tflite_version = '0.0.0-nightly'
+        tflite_version = '1.13.1'
     }
     repositories {
         google()
