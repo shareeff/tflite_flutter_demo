@@ -7,10 +7,9 @@ A new flutter plugin project.
 
 ** Kotlin Plugin
 
+** Flutter Stream Example
+
 For iOS and android support, you should consider [this tflite](https://github.com/shaqian/flutter_tflite) plugin
-
-## work in progress
-
 
 ## Getting Started
 
@@ -24,4 +23,6 @@ For help getting started with Flutter, view our
 samples, guidance on mobile development, and a full API reference.
 
 ## Reference
+The work is not built from scratch. Great appreciation to these open works
 [1] https://github.com/shaqian/flutter_tflite
+[2] https://github.com/kashifmin/flutter_tensorflow_lite
