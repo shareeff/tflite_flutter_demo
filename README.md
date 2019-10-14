@@ -26,4 +26,5 @@ samples, guidance on mobile development, and a full API reference.
 The work is not built from scratch. Great appreciation to these open works
 
 [1] https://github.com/shaqian/flutter_tflite
+
 [2] https://github.com/kashifmin/flutter_tensorflow_lite
