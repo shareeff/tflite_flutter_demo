@@ -58,11 +58,8 @@ class _MyHomePageState extends State<HomePage> {
               Text("Camera", style: TextStyle(fontSize: 20.0)) :
               Text("Photos", style: TextStyle(fontSize: 20.0)),
             color: Theme.of(context).primaryColor,
-            onPressed: snapshot.data 
-              ? null : 
-              () => isCamera ? _viewModel.processCameraImage
+            onPressed: isCamera ? _viewModel.processCameraImage
                       : _viewModel.processGalleryImage,
-
 
         )
         );
@@ -80,16 +77,20 @@ class _MyHomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: snapshot.data == null ? [] : 
-            snapshot.data.map((res){
-              return Text(
-                 "${res["index"]} - ${res["label"]}: ${res["confidence"].toStringAsFixed(3)}",
-                 style: TextStyle(
+            ListView.builder(
+              itemCount: snapshot.data.length,
+              itemBuilder: (BuildContext ctx, int index){
+                var res = snapshot.data[index];
+                return Text(
+                  "${res["index"]} - ${res["label"]}: ${res["confidence"].toStringAsFixed(3)}",
+                  style: TextStyle(
                       color: Colors.black,
                       fontSize: 20.0,
                       background: Paint()..color = Colors.white,
-                    ),
-              );
-            }).toList(),
+                  ),
+                );
+              },
+            ),
         );
       }
     )

@@ -31,7 +31,7 @@ class TflitePlugin: MethodCallHandler {
     private var interpreter: Interpreter? = null
     private var inputSize: Int = 0
     private var labels: Vector<String> = Vector()
-    var labelProb = arrayOf<Array<Float>>()
+    var labelProb: Array<FloatArray>? = null
     private const val BYTES_PER_CHANNEL: Int = 4
 
     @JvmStatic
@@ -116,7 +116,7 @@ class TflitePlugin: MethodCallHandler {
       lines.forEach{
         labels.add(it)
       }
-
+      labelProb = Array(1) { FloatArray(labels.size) }
       br.close()
     } catch (e: IOException){
       throw RuntimeException("Failed to read label file", e)
@@ -179,7 +179,7 @@ class TflitePlugin: MethodCallHandler {
             }
     )
     labels.forEachIndexed{ index, label ->
-      val confidence = labelProb[0][index]
+      val confidence = labelProb!![0][index]
       if(confidence > threshold){
         val res = HashMap<String, Any>()
         res["index"] = index
@@ -217,7 +217,7 @@ class TflitePlugin: MethodCallHandler {
     val threshold = argsHashMap["threshold"] as Double
     val resultThreshold = threshold.toFloat()
     val input = feedInputTensorImage(path, imageMean, imageStd)
-    interpreter?.run(input, labelProb)
+    interpreter?.run(input, labelProb!!)
 
     result.success(processOutput(numOfResults, resultThreshold))
 

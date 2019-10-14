@@ -21,7 +21,7 @@ class Tflite {
       {"modelPath": modelPath, "labelPath": labelPath, "numThreads": numThreads}
     );
   }
-  static Future<dynamic> runModelOnImage({
+  static Future<List> runModelOnImage({
     @required String imagePath,
     double imageMean = 0,
     double imageStd = 255.0,
@@ -34,7 +34,7 @@ class Tflite {
     );
   }
 
-  static Future<dynamic> closeInterpreter() async {
+  static Future closeInterpreter() async {
     return await _channel.invokeMethod(
       'closeInterpreter'
     );

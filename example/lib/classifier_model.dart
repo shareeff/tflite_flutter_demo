@@ -45,7 +45,7 @@ class ClassifierModel {
     }
   }
 
-  Future<dynamic> run({
+  Future<List> run({
     @required File imageFile,
     @required double imageMean,
     @required double imageStd,
@@ -65,9 +65,8 @@ class ClassifierModel {
   }
 
 
- Future<Null> close() async {
+ Future close() async {
    String res = await Tflite.closeInterpreter();
    print(res);
-   return null;
  }
 }

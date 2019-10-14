@@ -24,11 +24,15 @@ class ViewModel {
       modelPath: "assets/mobilenet_v1_1.0_224.tflite",
       labelPath: "assets/mobilenet_v1_1.0_224.txt"
     );
-    _classifierModel.init().then((val){
-      _isBusy = false;
-      _loadModelController.sink.add(_isBusy);
-    }
-    );
+    //_classifierModel.init().then((val){
+      //_isBusy = false;
+     // _loadModelController.sink.add(_isBusy);
+    //}
+
+    await _classifierModel.init();
+    _isBusy = false;
+    _loadModelController.sink.add(_isBusy);
+    print("View model initialization finished");
     //imagePickerStream.listen((file) => run(file));
     imagePickerStream.listen((file){
       run(file);
@@ -54,6 +58,8 @@ class ViewModel {
       numResults: 3,
       threshold: 0.05,
     );
+    print("Output type: " + recognitions.runtimeType.toString());
+    print("Output length ${recognitions.length}");
     _classifierController.sink.add(recognitions);
 
   }
