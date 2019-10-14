@@ -48,22 +48,16 @@ class _MyHomePageState extends State<HomePage> {
   }
 
   Widget takePhotoButton(bool isCamera){
-    return StreamBuilder(
-      stream: _viewModel.loadModelStream,
-      initialData: false,
-      builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-        return Expanded(
-          child: RaisedButton(
-            child: isCamera ? 
-              Text("Camera", style: TextStyle(fontSize: 20.0)) :
-              Text("Photos", style: TextStyle(fontSize: 20.0)),
-            color: Theme.of(context).primaryColor,
-            onPressed: isCamera ? _viewModel.processCameraImage
+    return Expanded(
+      child: RaisedButton(
+        child: isCamera ? 
+          Text("Camera", style: TextStyle(fontSize: 20.0)) :
+          Text("Photos", style: TextStyle(fontSize: 20.0)),
+          color: Theme.of(context).primaryColor,
+          onPressed: isCamera ? _viewModel.processCameraImage
                       : _viewModel.processGalleryImage,
 
-        )
-        );
-      }
+      )
     );
   }
 
@@ -151,6 +145,7 @@ Widget _busyToProcessImage(){
       home: Scaffold(
         appBar: AppBar(
           title: const Text('Tflite demo app'),
+          backgroundColor: Theme.of(context).primaryColor,
         ),
         body: Center(
           child: Stack(
