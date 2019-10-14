@@ -77,25 +77,22 @@ class _MyHomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: snapshot.data == null ? [] : 
-            ListView.builder(
-              itemCount: snapshot.data.length,
-              itemBuilder: (BuildContext ctx, int index){
-                var res = snapshot.data[index];
-                return Text(
+            snapshot.data.map((res){
+              return Text(
                   "${res["index"]} - ${res["label"]}: ${res["confidence"].toStringAsFixed(3)}",
                   style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20.0,
-                      background: Paint()..color = Colors.white,
-                  ),
-                );
-              },
-            ),
+                    color: Colors.black,
+                    fontSize: 20.0,
+                    //background: Paint()..color = Colors.white,
+                    ),
+                  );
+          }).toList(),
         );
+
       }
-    )
-    );
-  }
+    ),
+  );
+}
 
   Widget showPhoto(){
     return Expanded(
@@ -139,7 +136,7 @@ Widget _busyToProcessImage(){
   return StreamBuilder(
      stream: _viewModel.classifierStream,
       builder: (BuildContext context, AsyncSnapshot<List> snapshot){
-        return snapshot.data == null ? Center(child: CircularProgressIndicator()) : [];
+        return snapshot.data == null ? Center(child: CircularProgressIndicator()) : Text("Results:");
       }
   );
 }
