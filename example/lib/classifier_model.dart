@@ -60,7 +60,7 @@ class ClassifierModel {
       threshold: threshold,
     );
 
-    return recognitions;
+    return recognitions.reversed.toList();
 
   }
 
