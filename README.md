@@ -11,16 +11,19 @@ A new flutter plugin project.
 
 For iOS and android support, you should consider [this tflite](https://github.com/shaqian/flutter_tflite) plugin
 
-## Getting Started
+## Run
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
+From /example folder
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.dev/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+```
+flutter run
+```
+
+
+## Previews
+![](Previews/preview01.png)
+
+![](Previews/preview02.png)
 
 ## Reference
 The work is not built from scratch. Great appreciation to these open works
